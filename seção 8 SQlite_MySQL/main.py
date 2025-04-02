@@ -9,8 +9,14 @@ TABLE_NAME = 'customers'
 connection = sqlite3.connect(DB_FILE)
 cursor = connection.cursor()
 
-# CUIDADO: fazendo delete sem where
+# CRUD - Create  Read   Update Delete
+# SQL -  INSERT  SELECT UPDATE DELETE
 
+# CUIDADO: fazendo delete sem where
+cursor.execute(f'DELETE FROM {TABLE_NAME}')
+
+# DELETE mais cuidadoso
+cursor.execute(f'DELETE FROM sqlite_sequence WHERE name="{TABLE_NAME}"')
 
 cursor.execute(
     f'CREATE TABLE IF NOT EXISTS {TABLE_NAME}'
@@ -43,5 +49,20 @@ cursor.executemany(sql, ({"name":"Murilo", "weight": 93},{"name":"Ygor", "weight
 
 connection.commit()
 
-cursor.close()
-connection.close()
+if __name__ == '__main__':
+
+    cursor.execute(f'DELETE FROM {TABLE_NAME} WHERE id= 1')
+    connection.commit()
+
+    cursor.execute(f'UPDATE {TABLE_NAME} SET name="QUALQUER", weight=66.32 WHERE id= 4')
+    connection.commit()
+
+    cursor.execute(f'SELECT * FROM {TABLE_NAME}')
+    for row in cursor.fetchall():
+        _id, name, weight = row
+        print(_id, name, weight) 
+
+    connection.commit()
+
+    cursor.close()
+    connection.close()
